@@ -1,0 +1,17 @@
+package br.com.valter.picpaysimplificado.usuario.infra;
+import br.com.valter.picpaysimplificado.usuario.domain.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public class UsuarioJpaRepository implements UsuarioRepository {
+    @Autowired
+    private UsuarioJPA usuarioJPA;
+
+    @Override
+    public Usuario buscaUsuarioPorId(UUID id) {
+        return usuarioJPA.findById(id).orElse(null);
+    }
+}
