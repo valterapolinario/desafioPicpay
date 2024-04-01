@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface TransferenciaRepository {
 
-    Transferencia salvar(UUID id);
+    Transferencia salvar(Transferencia entidade);
 }

@@ -38,8 +38,4 @@ public class Usuario {
     private LocalDateTime dataCadastro;
     @Version
     private Long version;
-
-
-
-
 }

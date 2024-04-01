@@ -12,7 +12,7 @@ public class transferenciaJpaRepository implements TransferenciaRepository {
     private TransferenciaJPA transferenciaJPA;
 
     @Override
-    public Transferencia salvar(UUID id) {
-        return null;
+    public Transferencia salvar(Transferencia entidade) {
+        return transferenciaJPA.save(entidade);
     }
 }
