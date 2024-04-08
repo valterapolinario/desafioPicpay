@@ -6,7 +6,7 @@ public record Autorizacao(
 
     public static final String AUTORIZADO = "Autorizado";
 
-    public boolean autorizado(){
+    public boolean isAutorizado(){
         return AUTORIZADO.equals(message);
     }
 }
