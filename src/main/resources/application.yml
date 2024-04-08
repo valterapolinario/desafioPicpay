@@ -1,0 +1,44 @@
+app:
+    auth:
+        code: ${AUTH_CODE:/5794d450-d2e2-4412-8131-73d0293ac1cc}
+        path: ${AUTH_PATH:/v3}
+        url: ${AUTH_URL:https://run.mocky.io}
+    kafka:
+        notificacao:
+            groupId: ${NOTIFY_GROUP_ID:id}
+            topic: ${NOTIFY_TOPIC:notificacao-topic}
+    notify:
+        code: ${NOTIFY_CODE:/54dc2cf1-3add-45b5-b5a9-6bf7e7f1f4a6}
+        path: ${NOTIFY_PATH:/v3}
+        url: ${NOTIFY_URL:https://run.mocky.io}
+spring:
+    application:
+        name: picpay-simplificado
+    datasource:
+        driverClassName: org.h2.Driver
+        password: ''
+        url: jdbc:h2:mem:picpay
+        username: sa
+    h2:
+        console:
+            enabled: true
+            path: /h2-console
+    jpa:
+        defer-datasource-initialization: true
+        properties:
+            hibernate:
+                format_sql: true
+        show-sql: true
+    kafka:
+        bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
+        consumer:
+            auto-offset-reset: earliest
+            enable-auto-commit: false
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        producer:
+            key-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    sql:
+        init:
+            mode: always
