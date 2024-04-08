@@ -10,6 +10,14 @@ public enum TipoUsuarioEnum {
 
     private final String descricao;
 
+    public boolean isComum(){
+        return COMUM.equals(this);
+    }
+
+    public boolean isLojista(){
+        return LOJISTA.equals(this);
+    }
+
     TipoUsuarioEnum(String descricao){
         this.descricao = descricao;
     }

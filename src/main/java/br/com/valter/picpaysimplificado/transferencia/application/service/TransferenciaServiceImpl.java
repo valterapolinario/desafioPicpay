@@ -1,5 +1,6 @@
 package br.com.valter.picpaysimplificado.transferencia.application.service;
 
+import br.com.valter.picpaysimplificado.autorizacao.aplication.AutorizacaoService;
 import br.com.valter.picpaysimplificado.exception.ErroValidacaoException;
 import br.com.valter.picpaysimplificado.transferencia.application.api.TransferenciaRequest;
 import br.com.valter.picpaysimplificado.transferencia.application.api.TransferenciaResponse;
@@ -21,10 +22,34 @@ public class TransferenciaServiceImpl implements TransferenciaService {
     @Autowired
     TransferenciaRepository repository;
 
+    @Autowired
+    AutorizacaoService autorizacaoService;
+
     @Override
     @Transactional
     public TransferenciaResponse realizaTransferencia(TransferenciaRequest request) {
+
+        var autorizacao = autorizacaoService.autorizar();
+
+        if (!autorizacao.autorizado()){
+            throw new ErroValidacaoException("usuario não esta autorizado");
+        }
+        if (request.pagador().equals(request.recebedor())){
+            throw new ErroValidacaoException("recebedor e pagador iguais");
+        }
         // 1 - validar
+
+
+        var pagador  = usuarioRepository.buscaUsuarioPorId(request.pagador()).orElseThrow(()-> new ErroValidacaoException("pagador nao localizado"));
+        var recebedor = usuarioRepository.buscaUsuarioPorId(request.recebedor()).orElseThrow(()-> new ErroValidacaoException("recebedor nao localizado"));
+
+        if (pagador.getTipo().isLojista()){
+            throw new ErroValidacaoException("logista nao pode efetuar pagamento");
+        }
+        if (pagador.getCarteira().compareTo(request.valor()) >= 0){
+            throw new ErroValidacaoException("saldo insuficiente");
+        }
+
         Transferencia transferencia = Transferencia
                 .builder()
                 .valor(request.valor())
@@ -38,6 +63,11 @@ public class TransferenciaServiceImpl implements TransferenciaService {
         var novaTransferencia = repository
                 .salvar(transferencia);
 
+        pagador.debitar(request.valor());
+        recebedor.creditar(request.valor());
+
+        usuarioRepository.salvarUsuario(pagador);
+        usuarioRepository.salvarUsuario(recebedor);
 
         // 3 - debitar da carteira
 

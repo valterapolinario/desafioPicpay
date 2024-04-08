@@ -38,4 +38,12 @@ public class Usuario {
     private LocalDateTime dataCadastro;
     @Version
     private Long version;
+
+    public void debitar(BigDecimal valor){
+       carteira = carteira.subtract(valor);
+    }
+
+    public void creditar( BigDecimal valor){
+        carteira = carteira.add(valor);
+    }
 }
