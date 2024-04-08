@@ -65,7 +65,8 @@ public class TransferenciaServiceImpl implements TransferenciaService {
         usuarioRepository.salvarUsuario(pagador);
         usuarioRepository.salvarUsuario(recebedor);
         // 4 - notificar
-        notificacaoService.notificar();
+        notificacaoService.notificar(novaTransferencia);
+
         return new TransferenciaResponse(novaTransferencia.getId(),
                 novaTransferencia.getValor(),
                 novaTransferencia.getPagador(),

@@ -1,17 +1,18 @@
-package br.com.valter.picpaysimplificado.notificacao.application;
+package br.com.valter.picpaysimplificado.notificacao.infra;
 
-import br.com.valter.picpaysimplificado.notificacao.infra.Notificacao;
-import br.com.valter.picpaysimplificado.notificacao.infra.NotificacaoProducer;
 import br.com.valter.picpaysimplificado.transferencia.domain.Transferencia;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.Acknowledgment;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
 @Service
-public class NotificacaoService {
+public class NotificacaoConsumer {
     @Value("${app.notify.url}")
     String uri;
 
@@ -23,11 +24,15 @@ public class NotificacaoService {
 
     RestClient client = RestClient.create();
 
-    @Autowired
-    NotificacaoProducer producer;
 
-    public Notificacao notificar(Transferencia transferencia){
-        producer.enviarMensagem(transferencia);
+
+    @KafkaListener(groupId = "${app.kafka.notificacao.groupId}",topics = "${app.kafka.notificacao.topic}")
+    public void processarNotificacao(@Payload Transferencia transferencia, Acknowledgment acknowledgment){
+        notificar();
+        acknowledgment.acknowledge();
+    }
+
+    private Notificacao notificar(){
         return client
                 .get()
                 .uri(uri + path + code)
