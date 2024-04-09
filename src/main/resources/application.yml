@@ -30,7 +30,7 @@ spring:
                 format_sql: true
         show-sql: true
     kafka:
-        bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
+        bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9094}
         consumer:
             max-poll-records : 1
             auto-offset-reset: earliest
