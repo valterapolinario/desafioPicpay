@@ -32,6 +32,7 @@ spring:
     kafka:
         bootstrap-servers: ${BOOTSTRAP_SERVERS:localhost:9092}
         consumer:
+            max-poll-records : 1
             auto-offset-reset: earliest
             enable-auto-commit: false
             key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -39,6 +40,10 @@ spring:
         producer:
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
             value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        listener:
+            ack-mode: MANUAL_IMMEDIATE
+            concurrency: 10
+
     sql:
         init:
             mode: always
