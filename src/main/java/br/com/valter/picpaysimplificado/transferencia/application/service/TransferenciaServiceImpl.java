@@ -12,6 +12,7 @@ import br.com.valter.picpaysimplificado.usuario.domain.Usuario;
 import br.com.valter.picpaysimplificado.usuario.infra.UsuarioRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -115,6 +116,7 @@ public class TransferenciaServiceImpl implements TransferenciaService {
         usuarioRepository.salvarUsuario(recebedor);
     }
 
+    @Async
     private void notificarTransferencia(Transferencia transferencia) {
         notificacaoService.notificar(transferencia);
     }
