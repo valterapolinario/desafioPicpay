@@ -16,7 +16,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TransferenciaServiceImpl implements TransferenciaService {
@@ -82,6 +84,17 @@ public class TransferenciaServiceImpl implements TransferenciaService {
         if (request.pagador().equals(request.recebedor())) {
             throw new ErroValidacaoException(RECEBEDOR_PAGADOR_INVALIDOS);
         }
+    }
+
+    private void processamentoEmBlocos(Integer tamanhoBloco){
+        List<Usuario> registros = usuarioRepository.findAll();
+        registros
+                .stream()
+                .collect(Collectors.groupingBy(Usuario::getId))
+                .forEach((chave, bloco) -> processarBloco(bloco));
+    }
+
+    private void processarBloco(List<Usuario> bloco) {
     }
 
     private Usuario buscarUsuarioPorId(UUID id, String tipoUsuario) {

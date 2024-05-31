@@ -16,14 +16,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
 @RestControllerAdvice
 public class CustomHandler extends ResponseEntityExceptionHandler {
 
     @Override
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(BAD_REQUEST)
     public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         final List<FieldError> errors = ex.getFieldErrors();
-        ProblemDetail detail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        ProblemDetail detail = ProblemDetail.forStatus(BAD_REQUEST);
         Map<String, Set<String>> errorMap = errors
                 .stream()
                 .collect(Collectors
@@ -32,10 +35,13 @@ public class CustomHandler extends ResponseEntityExceptionHandler {
                                         Collectors.toSet())));
 
         detail.setTitle("Validation failed");
-        detail.setStatus(HttpStatus.BAD_REQUEST.value());
-        detail.setProperty("time",LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).truncatedTo(ChronoUnit.SECONDS));
+        detail.setStatus(BAD_REQUEST.value());
+        detail.setProperty("time",LocalDateTime.now
+                        (ZoneId
+                        .of("America/Sao_Paulo"))
+                .truncatedTo(SECONDS));
         detail.setProperty("errors",errorMap);
-        return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body(detail);
+        return  ResponseEntity.status(BAD_REQUEST).body(detail);
 
     }
 
